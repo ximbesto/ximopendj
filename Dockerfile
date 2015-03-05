@@ -14,7 +14,7 @@ RUN rm -rf /OpenDJ-2.6.0.zip
 ADD opendj.properties /var/lib/opendj/opendj.properties
 ADD opendj.sh /tmp/
 ADD ximinitdj.sh /tmp/
-RUN mkdir /etc/service/opendj
+#RUN mkdir /etc/service/opendj
 #RUN cd /var/lib/opendj;./setup  --cli --propertiesFilePath opendj.properties --acceptLicense --no-prompt
 #RUN /usr/sbin/enable_insecure_key
 #ADD opendj.sh /etc/service/opendj/run
