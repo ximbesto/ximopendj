@@ -1,0 +1,74 @@
+#!/bin/bash
+set -e
+
+appHelp () {
+	echo "Available options:"
+	echo " app:start          - Starts the opendj server"
+	echo " app:init          - Setup the opendj."
+	echo " app:help           - Displays the help"
+	echo " app:os          - get Os . Bash"
+}
+
+appStart () {
+	echo " ================== APP START ==================== "
+#	ulimit -n 10240
+#	exec /var/lib/opendj/bin/start-ds -N
+#	addService
+#	appOs
+}
+
+
+appOs(){
+	echo " ================== APP OS ==================== "
+	cd /sbin/; ./my_init
+}
+
+appInit(){
+	echo " ================== APP INIT ==================== "
+	cd /var/lib/opendj;./setup  --cli --propertiesFilePath opendj.properties --acceptLicense --no-prompt
+	echo "init" > /var/lib/opendj/db/userRoot/ximinit
+	cd /usr/sbin/; ./enable_insecure_key
+#	addService
+#	appStart
+	ulimit -n 10240
+	exec /var/lib/opendj/bin/start-ds -N
+	#exec /etc/service/opendj/run
+}
+
+addService(){
+	mkdir /etc/service/opendj
+	cp /tmp/opendj.sh /etc/service/opendj/run
+	rm -rf /tmp/opendj.sh
+	chmod +x /etc/service/opendj/run
+}
+
+
+case "$1" in
+  app:start)
+    appStart
+    ;;
+  app:init)
+    appInit
+    ;;
+  app:help)
+    appHelp
+    ;;
+  app:os)
+	appOs
+	;;
+  *)	
+  
+	if test -f "/var/lib/opendj/db/userRoot/ximinit"; then 
+		echo " ================== File exist ==================== "
+		#appStart
+		#appOs
+		ulimit -n 10240
+		 exec /var/lib/opendj/bin/start-ds -N
+	else
+		echo " ================== file not found !!! ==================== "
+		appInit
+	fi
+	;;
+esac
+
+exit 0
